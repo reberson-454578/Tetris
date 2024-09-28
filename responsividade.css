@@ -1,0 +1,68 @@
+/* Responsividade para telas menores (smartphones) */
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .tetris-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
+
+  /* Ajuste da proporção do tabuleiro */
+  #game-board {
+    width: 60vw;
+    height: calc(60vw * 2); /* Manter a proporção correta */
+    max-width: 200px;
+    max-height: 330px;
+    margin-right: 0;
+    margin-top: 0;
+  }
+
+  .info-panel {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  /* Ajuste para reduzir a tela da próxima peça */
+  #next-piece-display {
+    width: 50px; /* Diminuindo o tamanho */
+    height: 50px;
+    margin-bottom: 5px; /* Diminuindo o espaçamento */
+  }
+
+  /* Organizar os botões lado a lado */
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 200px; /* Ajuste de largura */
+  }
+
+  #pause-btn,
+  #restart-btn,
+  #modal-restart-btn {
+    padding: 8px;
+    font-size: 12px;
+    flex: 1;
+    margin: 0 5px; /* Espaçamento entre os botões */
+  }
+
+  #game-over-modal .modal-content {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  .info-panel .score {
+    font-size: 14px;
+  }
+
+  #play-icon {
+    font-size: 24px;
+  }
+}
