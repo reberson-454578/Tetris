@@ -1,22 +1,29 @@
 /* Responsividade para telas menores (smartphones) */
 @media (max-width: 768px) {
+  html,
   body {
-    flex-direction: column;
-    padding: 10px;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* Impedir barra de rolagem */
   }
 
   .tetris-container {
     flex-direction: column;
     align-items: center;
-    padding: 10px;
+    padding: 5px; /* Diminuir o padding */
+    width: 100vw; /* Ocupar toda a largura */
+    height: 100vh; /* Ocupar toda a altura */
+    box-sizing: border-box;
   }
 
   /* Ajuste da proporção do tabuleiro */
   #game-board {
-    width: 60vw;
-    height: calc(60vw * 2); /* Manter a proporção correta */
-    max-width: 200px;
-    max-height: 330px;
+    width: 90vw; /* Aumentar para ocupar quase toda a tela */
+    height: calc(90vw * 2); /* Manter a proporção de 2:1 */
+    max-width: 300px;
+    max-height: calc(300px * 2);
     margin-right: 0;
     margin-top: 0;
   }
@@ -24,21 +31,22 @@
   .info-panel {
     margin-top: 10px;
     text-align: center;
+    width: 90vw;
   }
 
   /* Ajuste para reduzir a tela da próxima peça */
   #next-piece-display {
-    width: 50px; /* Diminuindo o tamanho */
-    height: 50px;
+    width: 45px; /* Diminuindo o tamanho */
+    height: 45px;
     margin-bottom: 5px; /* Diminuindo o espaçamento */
   }
 
   /* Organizar os botões lado a lado */
   .button-container {
     display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 200px; /* Ajuste de largura */
+    margin: 0 auto;
+    width: 80vw; /* Ajuste de largura */
+    max-width: 200px; /* Máximo de largura */
   }
 
   #pause-btn,
