@@ -12,7 +12,7 @@
   .tetris-container {
     flex-direction: column;
     align-items: center;
-    padding: 20px 5px 5px 5px; /* Diminuir o padding */
+    padding: 5px; /* Diminuir o padding */
     width: 85%; /* Ocupar toda a largura */
     height: 70vh; /* Ocupar toda a altura */
     box-sizing: border-box;
@@ -20,6 +20,7 @@
 
   /* Ajuste da proporção do tabuleiro */
   #game-board {
+    padding-top: 20px;
     width: 250px; /* Aumentar para ocupar quase toda a tela */
     height: 350px; /* Manter a proporção de 2:1 */
     margin-right: 0;
