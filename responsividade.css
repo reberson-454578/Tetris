@@ -14,7 +14,7 @@
     align-items: center;
     padding: 5px; /* Diminuir o padding */
     width: 85%; /* Ocupar toda a largura */
-    height: 80vh; /* Ocupar toda a altura */
+    height: 90vh; /* Ocupar toda a altura */
     box-sizing: border-box;
   }
 
@@ -43,7 +43,7 @@
   .button-container {
     display: flex;
     justify-content: space-between;
-    margin: 0 auto 20px auto;
+    margin: 0 auto 10px auto;
     width: 80vw; /* Ajuste de largura */
     max-width: 200px; /* Máximo de largura */
   }
