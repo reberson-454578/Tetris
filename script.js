@@ -526,3 +526,29 @@ function moveDown() {
 // Adicionar os eventos de toque para celulares
 document.addEventListener("touchstart", handleTouchStart);
 document.addEventListener("touchend", handleTouchEnd);
+
+// Função para bloquear o zoom no celular
+function preventZoom(event) {
+  if (event.touches.length > 1) {
+    // Bloquear pinch-to-zoom (zoom com dois dedos)
+    event.preventDefault();
+  }
+}
+
+function preventDoubleTapZoom(event) {
+  const currentTime = new Date().getTime();
+  const tapGap = currentTime - lastTapTime;
+
+  if (tapGap < 300 && tapGap > 0) {
+    // Se dois toques ocorrerem em menos de 300ms, impedir o zoom
+    event.preventDefault();
+  }
+
+  lastTapTime = currentTime;
+}
+
+// Impedir o comportamento de zoom com dois dedos
+document.addEventListener("touchstart", preventZoom, { passive: false });
+
+// Impedir o comportamento de zoom com dois toques
+document.addEventListener("touchend", preventDoubleTapZoom);
