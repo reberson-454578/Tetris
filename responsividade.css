@@ -13,17 +13,17 @@
     flex-direction: column;
     align-items: center;
     padding: 5px; /* Diminuir o padding */
-    width: 100vw; /* Ocupar toda a largura */
-    height: 100vh; /* Ocupar toda a altura */
+    width: 90vw; /* Ocupar toda a largura */
+    height: 90vh; /* Ocupar toda a altura */
     box-sizing: border-box;
   }
 
   /* Ajuste da proporção do tabuleiro */
   #game-board {
-    width: 90vw; /* Aumentar para ocupar quase toda a tela */
-    height: calc(90vw * 2); /* Manter a proporção de 2:1 */
-    max-width: 400px;
-    max-height: calc(400px * 2);
+    width: 80vw; /* Aumentar para ocupar quase toda a tela */
+    height: calc(80vw * 2); /* Manter a proporção de 2:1 */
+    max-width: 300px;
+    max-height: calc(300px * 2);
     margin-right: 0;
     margin-top: 0;
   }
