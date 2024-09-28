@@ -617,3 +617,28 @@ function handleSwipe(diffX, diffY) {
     }
   }
 }
+
+// Função para bloquear o zoom por pinch-to-zoom (gesto de pinça) e double-tap (dois toques)
+function preventZoom(event) {
+  // Bloquear pinch-to-zoom (mais de um toque simultâneo)
+  if (event.touches.length > 1) {
+    event.preventDefault(); // Previne o comportamento padrão
+  }
+}
+
+// Função para bloquear o double-tap-to-zoom (zoom com dois toques rápidos)
+let lastTouchEnd = 0;
+function preventDoubleTapZoom(event) {
+  const currentTime = new Date().getTime();
+  const tapGap = currentTime - lastTouchEnd;
+
+  // Se dois toques ocorrerem em menos de 300ms, previne o zoom
+  if (tapGap < 300) {
+    event.preventDefault();
+  }
+  lastTouchEnd = currentTime;
+}
+
+// Eventos para bloquear zoom em dispositivos móveis
+document.addEventListener("touchstart", preventZoom, { passive: false });
+document.addEventListener("touchend", preventDoubleTapZoom);
