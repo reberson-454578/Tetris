@@ -552,3 +552,54 @@ document.addEventListener("touchstart", preventZoom, { passive: false });
 
 // Impedir o comportamento de zoom com dois toques
 document.addEventListener("touchend", preventDoubleTapZoom);
+
+let fastDropInterval = null; // Variável para armazenar o intervalo de descida rápida
+
+// Função para mover a peça para baixo mais rapidamente (enquanto o jogador desliza para baixo)
+function fastMoveDown() {
+  clearInterval(fastDropInterval); // Limpar qualquer intervalo existente
+  fastDropInterval = setInterval(() => {
+    moveDown();
+  }, 50); // Intervalo rápido (50ms)
+}
+
+// Função chamada ao terminar o toque (inclusive deslize)
+function handleTouchEnd(event) {
+  const touchEndTime = new Date().getTime();
+  const touchDuration = touchEndTime - touchStartTime;
+
+  const touch = event.changedTouches[0];
+  const diffX = touch.clientX - startX;
+  const diffY = touch.clientY - startY;
+
+  // Detecção de swipe
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (diffX > swipeThreshold) {
+      moveRight(); // Swipe para a direita
+    } else if (diffX < -swipeThreshold) {
+      moveLeft(); // Swipe para a esquerda
+    }
+  } else {
+    if (diffY > swipeThreshold) {
+      fastMoveDown(); // Swipe para baixo (descer rapidamente)
+    }
+  }
+
+  // Parar descida rápida ao terminar o deslize
+  clearInterval(fastDropInterval);
+
+  // Detecção de toque duplo
+  const currentTime = new Date().getTime();
+  const tapGap = currentTime - lastTapTime;
+
+  if (tapGap < 250 && tapGap > 0) {
+    // Melhorar o tempo de resposta do toque duplo
+    rotatePieceOnTouch();
+  }
+
+  lastTapTime = currentTime;
+}
+
+// Impedir o comportamento de zoom com dois dedos
+document.addEventListener("touchstart", handleTouchStart);
+document.addEventListener("touchend", handleTouchEnd);
