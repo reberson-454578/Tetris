@@ -21,7 +21,7 @@
   /* Ajuste da proporção do tabuleiro */
   #game-board {
     width: 300px; /* Aumentar para ocupar quase toda a tela */
-    height: 600px; /* Manter a proporção de 2:1 */
+    height: 350px; /* Manter a proporção de 2:1 */
     margin-right: 0;
     margin-top: 0;
   }
