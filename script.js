@@ -432,51 +432,53 @@ document.getElementById("play-icon").addEventListener("click", () => {
 
 let startX = 0,
   startY = 0;
-let lastTapTime = 0; // Armazena o tempo do último toque
+let touchStartTime = 0;
+let lastTapTime = 0;
+const swipeThreshold = 30; // Menor distância para ser considerado um swipe
 
+// Função chamada ao iniciar um toque
 function handleTouchStart(event) {
   const touch = event.touches[0];
   startX = touch.clientX;
   startY = touch.clientY;
-
-  // Detectar toque duplo para rotacionar a peça
-  const currentTime = new Date().getTime();
-  const tapGap = currentTime - lastTapTime;
-
-  if (tapGap < 300 && tapGap > 0) {
-    // Verifica se o intervalo entre toques é curto (300ms)
-    rotatePieceOnTouch();
-  }
-  lastTapTime = currentTime;
+  touchStartTime = new Date().getTime();
 }
 
-function handleTouchMove(event) {
-  if (paused) return;
+// Função chamada ao terminar um toque
+function handleTouchEnd(event) {
+  const touchEndTime = new Date().getTime();
+  const touchDuration = touchEndTime - touchStartTime;
 
-  const touch = event.touches[0];
+  const touch = event.changedTouches[0];
   const diffX = touch.clientX - startX;
   const diffY = touch.clientY - startY;
 
+  // Detecção de swipe
   if (Math.abs(diffX) > Math.abs(diffY)) {
-    if (diffX > 30) {
-      // Mover para a direita
-      moveRight();
-    } else if (diffX < -30) {
-      // Mover para a esquerda
-      moveLeft();
+    if (diffX > swipeThreshold) {
+      moveRight(); // Swipe para a direita
+    } else if (diffX < -swipeThreshold) {
+      moveLeft(); // Swipe para a esquerda
     }
   } else {
-    if (diffY > 30) {
-      // Mover para baixo
-      moveDown();
+    if (diffY > swipeThreshold) {
+      moveDown(); // Swipe para baixo
     }
   }
 
-  // Reset touch points
-  startX = touch.clientX;
-  startY = touch.clientY;
+  // Detecção de toque duplo
+  const currentTime = new Date().getTime();
+  const tapGap = currentTime - lastTapTime;
+
+  if (tapGap < 250 && tapGap > 0) {
+    // Melhorar o tempo de resposta do toque duplo
+    rotatePieceOnTouch();
+  }
+
+  lastTapTime = currentTime;
 }
 
+// Função para rotacionar a peça
 function rotatePieceOnTouch() {
   const rotatedPiece = rotatePiece(currentPiece); // Gira a peça
   clearPiece(currentPiece, currentPiece.pos);
@@ -484,6 +486,43 @@ function rotatePieceOnTouch() {
   drawPiece(currentPiece, currentPiece.pos);
 }
 
+// Funções para mover a peça
+function moveLeft() {
+  const newPos = { ...currentPiece.pos, x: currentPiece.pos.x - 1 };
+  if (!detectCollision(currentPiece, newPos)) {
+    clearPiece(currentPiece, currentPiece.pos);
+    currentPiece.pos = newPos;
+    drawPiece(currentPiece, currentPiece.pos);
+  }
+}
+
+function moveRight() {
+  const newPos = { ...currentPiece.pos, x: currentPiece.pos.x + 1 };
+  if (!detectCollision(currentPiece, newPos)) {
+    clearPiece(currentPiece, currentPiece.pos);
+    currentPiece.pos = newPos;
+    drawPiece(currentPiece, currentPiece.pos);
+  }
+}
+
+function moveDown() {
+  const newPos = { x: currentPiece.pos.x, y: currentPiece.pos.y + 1 };
+  if (!detectCollision(currentPiece, newPos)) {
+    clearPiece(currentPiece, currentPiece.pos);
+    currentPiece.pos = newPos;
+    drawPiece(currentPiece, currentPiece.pos);
+  } else {
+    lockPiece(currentPiece);
+    clearLines();
+    currentPiece = nextPiece;
+    nextPiece = randomPiece();
+    drawNextPiece(nextPiece); // Exibir a próxima peça
+    if (detectCollision(currentPiece, currentPiece.pos)) {
+      gameOver();
+    }
+  }
+}
+
 // Adicionar os eventos de toque para celulares
 document.addEventListener("touchstart", handleTouchStart);
-document.addEventListener("touchmove", handleTouchMove);
+document.addEventListener("touchend", handleTouchEnd);
