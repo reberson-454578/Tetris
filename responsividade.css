@@ -12,9 +12,9 @@
   .tetris-container {
     flex-direction: column;
     align-items: center;
-    padding-top: 30px;
+    padding: 5px; /* Diminuir o padding */
     width: 85%; /* Ocupar toda a largura */
-    height: 70vh; /* Ocupar toda a altura */
+    height: 80vh; /* Ocupar toda a altura */
     box-sizing: border-box;
   }
 
