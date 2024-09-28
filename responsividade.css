@@ -22,8 +22,8 @@
   #game-board {
     width: 90vw; /* Aumentar para ocupar quase toda a tela */
     height: calc(90vw * 2); /* Manter a proporção de 2:1 */
-    max-width: 300px;
-    max-height: calc(300px * 2);
+    max-width: 400px;
+    max-height: calc(400px * 2);
     margin-right: 0;
     margin-top: 0;
   }
@@ -44,6 +44,7 @@
   /* Organizar os botões lado a lado */
   .button-container {
     display: flex;
+    justify-content: space-between;
     margin: 0 auto;
     width: 80vw; /* Ajuste de largura */
     max-width: 200px; /* Máximo de largura */
