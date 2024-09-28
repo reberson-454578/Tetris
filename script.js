@@ -432,11 +432,22 @@ document.getElementById("play-icon").addEventListener("click", () => {
 
 let startX = 0,
   startY = 0;
+let lastTapTime = 0; // Armazena o tempo do último toque
 
 function handleTouchStart(event) {
   const touch = event.touches[0];
   startX = touch.clientX;
   startY = touch.clientY;
+
+  // Detectar toque duplo para rotacionar a peça
+  const currentTime = new Date().getTime();
+  const tapGap = currentTime - lastTapTime;
+
+  if (tapGap < 300 && tapGap > 0) {
+    // Verifica se o intervalo entre toques é curto (300ms)
+    rotatePieceOnTouch();
+  }
+  lastTapTime = currentTime;
 }
 
 function handleTouchMove(event) {
@@ -466,22 +477,11 @@ function handleTouchMove(event) {
   startY = touch.clientY;
 }
 
-function moveLeft() {
-  const newPos = { ...currentPiece.pos, x: currentPiece.pos.x - 1 };
-  if (!detectCollision(currentPiece, newPos)) {
-    clearPiece(currentPiece, currentPiece.pos);
-    currentPiece.pos = newPos;
-    drawPiece(currentPiece, currentPiece.pos);
-  }
-}
-
-function moveRight() {
-  const newPos = { ...currentPiece.pos, x: currentPiece.pos.x + 1 };
-  if (!detectCollision(currentPiece, newPos)) {
-    clearPiece(currentPiece, currentPiece.pos);
-    currentPiece.pos = newPos;
-    drawPiece(currentPiece, currentPiece.pos);
-  }
+function rotatePieceOnTouch() {
+  const rotatedPiece = rotatePiece(currentPiece); // Gira a peça
+  clearPiece(currentPiece, currentPiece.pos);
+  currentPiece = rotatedPiece;
+  drawPiece(currentPiece, currentPiece.pos);
 }
 
 // Adicionar os eventos de toque para celulares
