@@ -514,3 +514,106 @@ function rotatePieceOnTouch() {
 // Impedir o comportamento de zoom com dois dedos
 document.addEventListener("touchstart", handleTouchStart);
 document.addEventListener("touchend", handleTouchEnd);
+
+// Função para rotacionar a peça
+function rotatePiece(piece) {
+  const rotatedShape = piece.shape[0]
+    .map((_, index) => piece.shape.map((row) => row[index]))
+    .reverse();
+
+  const newPiece = { ...piece, shape: rotatedShape };
+
+  // Verificar se a rotação causaria uma colisão
+  if (!detectCollision(newPiece, piece.pos)) {
+    return newPiece; // Retornar a peça rotacionada se não houver colisão
+  } else {
+    return piece; // Se houver colisão, manter a peça na rotação atual
+  }
+}
+
+// Função para mover a peça para a esquerda
+function moveLeft() {
+  const newPos = { ...currentPiece.pos, x: currentPiece.pos.x - 1 };
+  if (!detectCollision(currentPiece, newPos)) {
+    clearPiece(currentPiece, currentPiece.pos);
+    currentPiece.pos = newPos;
+    drawPiece(currentPiece, currentPiece.pos);
+  }
+}
+
+// Função para mover a peça para a direita
+function moveRight() {
+  const newPos = { ...currentPiece.pos, x: currentPiece.pos.x + 1 };
+  if (!detectCollision(currentPiece, newPos)) {
+    clearPiece(currentPiece, currentPiece.pos);
+    currentPiece.pos = newPos;
+    drawPiece(currentPiece, currentPiece.pos);
+  }
+}
+
+// Função para mover a peça para baixo
+function moveDown() {
+  const newPos = { x: currentPiece.pos.x, y: currentPiece.pos.y + 1 };
+  if (!detectCollision(currentPiece, newPos)) {
+    clearPiece(currentPiece, currentPiece.pos);
+    currentPiece.pos = newPos;
+    drawPiece(currentPiece, currentPiece.pos);
+  } else {
+    lockPiece(currentPiece);
+    clearLines();
+    currentPiece = nextPiece;
+    nextPiece = randomPiece();
+    drawNextPiece(nextPiece); // Exibir a próxima peça
+    if (detectCollision(currentPiece, currentPiece.pos)) {
+      gameOver();
+    }
+  }
+}
+
+// Função para descer a peça até o fundo
+function dropToBottom() {
+  let newPos = { x: currentPiece.pos.x, y: currentPiece.pos.y + 1 };
+
+  // Descer a peça rapidamente até encontrar uma colisão
+  while (!detectCollision(currentPiece, newPos)) {
+    clearPiece(currentPiece, currentPiece.pos);
+    currentPiece.pos = newPos;
+    newPos = { x: currentPiece.pos.x, y: currentPiece.pos.y + 1 };
+  }
+
+  // Quando encontrar uma colisão, travar a peça no lugar
+  drawPiece(currentPiece, currentPiece.pos);
+  lockPiece(currentPiece);
+  clearLines();
+  currentPiece = nextPiece;
+  nextPiece = randomPiece();
+  drawNextPiece(nextPiece);
+
+  // Verificar se a nova peça colidiu logo ao aparecer
+  if (detectCollision(currentPiece, currentPiece.pos)) {
+    gameOver();
+  }
+}
+
+// Função para rotacionar a peça ao tocar na tela
+function rotatePieceOnTouch() {
+  const rotatedPiece = rotatePiece(currentPiece); // Gira a peça
+  clearPiece(currentPiece, currentPiece.pos);
+  currentPiece = rotatedPiece;
+  drawPiece(currentPiece, currentPiece.pos);
+}
+
+// Detecção de swipe para mover e deslizar
+function handleSwipe(diffX, diffY) {
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (diffX > 30) {
+      moveRight(); // Swipe para a direita
+    } else if (diffX < -30) {
+      moveLeft(); // Swipe para a esquerda
+    }
+  } else {
+    if (diffY > 30) {
+      dropToBottom(); // Swipe para baixo (descer até o fundo)
+    }
+  }
+}
