@@ -314,6 +314,31 @@ function updateBoard() {
   }
 }
 
+// Função para mover a peça para baixo rapidamente até o fundo
+function dropToBottom() {
+  let newPos = { x: currentPiece.pos.x, y: currentPiece.pos.y + 1 };
+
+  // Descer a peça rapidamente até encontrar uma colisão
+  while (!detectCollision(currentPiece, newPos)) {
+    clearPiece(currentPiece, currentPiece.pos);
+    currentPiece.pos = newPos;
+    newPos = { x: currentPiece.pos.x, y: currentPiece.pos.y + 1 };
+  }
+
+  // Quando encontrar uma colisão, travar a peça no lugar
+  drawPiece(currentPiece, currentPiece.pos);
+  lockPiece(currentPiece);
+  clearLines();
+  currentPiece = nextPiece;
+  nextPiece = randomPiece();
+  drawNextPiece(nextPiece);
+
+  // Verificar se a nova peça colidiu logo ao aparecer
+  if (detectCollision(currentPiece, currentPiece.pos)) {
+    gameOver();
+  }
+}
+
 // Função para mover a peça para baixo
 function moveDown() {
   const newPos = { x: currentPiece.pos.x, y: currentPiece.pos.y + 1 };
@@ -462,7 +487,7 @@ function handleTouchEnd(event) {
     }
   } else {
     if (diffY > swipeThreshold) {
-      moveDown(); // Swipe para baixo
+      dropToBottom(); // Swipe para baixo (descer até o fundo)
     }
   }
 
@@ -484,120 +509,6 @@ function rotatePieceOnTouch() {
   clearPiece(currentPiece, currentPiece.pos);
   currentPiece = rotatedPiece;
   drawPiece(currentPiece, currentPiece.pos);
-}
-
-// Funções para mover a peça
-function moveLeft() {
-  const newPos = { ...currentPiece.pos, x: currentPiece.pos.x - 1 };
-  if (!detectCollision(currentPiece, newPos)) {
-    clearPiece(currentPiece, currentPiece.pos);
-    currentPiece.pos = newPos;
-    drawPiece(currentPiece, currentPiece.pos);
-  }
-}
-
-function moveRight() {
-  const newPos = { ...currentPiece.pos, x: currentPiece.pos.x + 1 };
-  if (!detectCollision(currentPiece, newPos)) {
-    clearPiece(currentPiece, currentPiece.pos);
-    currentPiece.pos = newPos;
-    drawPiece(currentPiece, currentPiece.pos);
-  }
-}
-
-function moveDown() {
-  const newPos = { x: currentPiece.pos.x, y: currentPiece.pos.y + 1 };
-  if (!detectCollision(currentPiece, newPos)) {
-    clearPiece(currentPiece, currentPiece.pos);
-    currentPiece.pos = newPos;
-    drawPiece(currentPiece, currentPiece.pos);
-  } else {
-    lockPiece(currentPiece);
-    clearLines();
-    currentPiece = nextPiece;
-    nextPiece = randomPiece();
-    drawNextPiece(nextPiece); // Exibir a próxima peça
-    if (detectCollision(currentPiece, currentPiece.pos)) {
-      gameOver();
-    }
-  }
-}
-
-// Adicionar os eventos de toque para celulares
-document.addEventListener("touchstart", handleTouchStart);
-document.addEventListener("touchend", handleTouchEnd);
-
-// Função para bloquear o zoom no celular
-function preventZoom(event) {
-  if (event.touches.length > 1) {
-    // Bloquear pinch-to-zoom (zoom com dois dedos)
-    event.preventDefault();
-  }
-}
-
-function preventDoubleTapZoom(event) {
-  const currentTime = new Date().getTime();
-  const tapGap = currentTime - lastTapTime;
-
-  if (tapGap < 300 && tapGap > 0) {
-    // Se dois toques ocorrerem em menos de 300ms, impedir o zoom
-    event.preventDefault();
-  }
-
-  lastTapTime = currentTime;
-}
-
-// Impedir o comportamento de zoom com dois dedos
-document.addEventListener("touchstart", preventZoom, { passive: false });
-
-// Impedir o comportamento de zoom com dois toques
-document.addEventListener("touchend", preventDoubleTapZoom);
-
-let fastDropInterval = null; // Variável para armazenar o intervalo de descida rápida
-
-// Função para mover a peça para baixo mais rapidamente (enquanto o jogador desliza para baixo)
-function fastMoveDown() {
-  clearInterval(fastDropInterval); // Limpar qualquer intervalo existente
-  fastDropInterval = setInterval(() => {
-    moveDown();
-  }, 50); // Intervalo rápido (50ms)
-}
-
-// Função chamada ao terminar o toque (inclusive deslize)
-function handleTouchEnd(event) {
-  const touchEndTime = new Date().getTime();
-  const touchDuration = touchEndTime - touchStartTime;
-
-  const touch = event.changedTouches[0];
-  const diffX = touch.clientX - startX;
-  const diffY = touch.clientY - startY;
-
-  // Detecção de swipe
-  if (Math.abs(diffX) > Math.abs(diffY)) {
-    if (diffX > swipeThreshold) {
-      moveRight(); // Swipe para a direita
-    } else if (diffX < -swipeThreshold) {
-      moveLeft(); // Swipe para a esquerda
-    }
-  } else {
-    if (diffY > swipeThreshold) {
-      fastMoveDown(); // Swipe para baixo (descer rapidamente)
-    }
-  }
-
-  // Parar descida rápida ao terminar o deslize
-  clearInterval(fastDropInterval);
-
-  // Detecção de toque duplo
-  const currentTime = new Date().getTime();
-  const tapGap = currentTime - lastTapTime;
-
-  if (tapGap < 250 && tapGap > 0) {
-    // Melhorar o tempo de resposta do toque duplo
-    rotatePieceOnTouch();
-  }
-
-  lastTapTime = currentTime;
 }
 
 // Impedir o comportamento de zoom com dois dedos
